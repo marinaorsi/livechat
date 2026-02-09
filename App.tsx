@@ -1,40 +1,39 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChatWidget } from './components/ChatWidget';
 import { DEFAULT_WEBHOOK_URL, INITIAL_GREETING } from './constants';
 import { Message } from './types';
 
 const App: React.FC = () => {
-  const [isWidgetOpen, setIsWidgetOpen] = useState(true);
+  // Il widget parte SEMPRE chiuso per un embed pulito
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
   const [webhookUrl, setWebhookUrl] = useState<string>(DEFAULT_WEBHOOK_URL);
   
-  // Stato persistente dei messaggi al livello più alto dell'app
+  // Stato persistente dei messaggi
   const [messages, setMessages] = useState<Message[]>([
     { id: 'init-1', text: INITIAL_GREETING, sender: 'agent', timestamp: Date.now() }
   ]);
   
-  // ID Sessione persistente
   const [sessionId] = useState(() => Math.random().toString(36).substring(7));
 
+  // Funzione di toggle che comunica anche con l'esterno (iframe padre)
+  const toggleWidget = (open: boolean) => {
+    setIsWidgetOpen(open);
+    window.parent.postMessage(open ? 'open-chat' : 'close-chat', '*');
+  };
+
   return (
-    <div className="w-full h-screen relative bg-[#0f172a] flex items-center justify-center overflow-hidden">
-      <div className="text-center p-8 max-w-2xl">
-        <h1 className="text-4xl font-bold text-white mb-4">LiveChat Widget Clone</h1>
-        <p className="text-gray-400 mb-8">
-          Integrazione webhook n8n con persistenza della conversazione e design premium.
-        </p>
-        <button 
-          onClick={() => setIsWidgetOpen(true)}
-          className="bg-[#facc15] hover:bg-[#eab308] text-black font-bold py-3 px-8 rounded-full transition-transform hover:scale-105 active:scale-95 shadow-lg shadow-yellow-500/20"
-        >
-          Apri Chat
-        </button>
-      </div>
+    // Sfondo forzatamente trasparente per l'embed
+    <div className="w-full h-screen relative overflow-hidden bg-transparent">
+      
+      {/* 
+          PAGINA DI ANTEPRIMA RIMOSSA DEFINITIVAMENTE.
+          Ora l'app renderizza solo il widget o la bolla.
+      */}
 
       {!isWidgetOpen && (
         <button
-          onClick={() => setIsWidgetOpen(true)}
-          className="fixed bottom-6 right-6 w-16 h-16 bg-[#facc15] rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform z-40 group"
+          onClick={() => toggleWidget(true)}
+          className="fixed bottom-6 right-6 w-16 h-16 bg-[#facc15] rounded-full shadow-[0_10px_30px_rgba(250,204,21,0.5)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40 group"
         >
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform transition-transform duration-300 group-hover:rotate-6">
             <rect x="2" y="2" width="20" height="20" rx="7" fill="#111111" />
@@ -46,7 +45,7 @@ const App: React.FC = () => {
 
       <ChatWidget 
         isOpen={isWidgetOpen} 
-        onClose={() => setIsWidgetOpen(false)} 
+        onClose={() => toggleWidget(false)} 
         webhookUrl={webhookUrl}
         setWebhookUrl={setWebhookUrl}
         messages={messages}
