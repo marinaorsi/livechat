@@ -31,7 +31,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-[90vw] sm:w-[350px] h-[640px] max-h-[85vh] bg-[#0c0c0c] rounded-[32px] shadow-2xl flex flex-col overflow-hidden border border-white/10 z-50 font-sans transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in">
       
-      {/* Header dinamico: visibile solo in Home o Contact per lasciare spazio alla chat dedicata */}
+      {/* Header dinamico: visibile solo in Home o Contact */}
       {activeView !== ViewState.CHAT && (
         <>
           <div className="absolute top-0 left-0 w-full h-[380px] bg-gradient-to-b from-[#4d4018] to-[#0c0c0c] pointer-events-none z-0" />
@@ -48,8 +48,8 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({
         </>
       )}
 
-      {/* Area Contenuto - flex-1 garantisce che occupi tutto lo spazio */}
-      <div className="relative z-10 flex-1 flex flex-col min-h-0 bg-transparent overflow-hidden">
+      {/* Area Contenuto - flex-1 occupa tutto lo spazio disponibile */}
+      <div className={`relative z-10 flex-1 flex flex-col min-h-0 bg-transparent overflow-hidden ${activeView === ViewState.CHAT ? 'h-full' : ''}`}>
         {activeView === ViewState.CHAT ? (
           <WidgetChat 
             webhookUrl={webhookUrl} 
@@ -66,8 +66,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({
         )}
       </div>
 
-      {/* Navigazione Footer - Sempre visibile tranne quando la chat è a tutto schermo (opzionale) */}
-      {/* Per la massima stabilità la lasciamo visibile o la rimuoviamo solo se la Chat ha un suo header di ritorno */}
+      {/* Navigazione Footer: visibile solo fuori dalla chat per dare spazio alla tastiera e ai messaggi */}
       {activeView !== ViewState.CHAT && (
         <div className="relative z-10 px-6 pb-4 pt-0 bg-[#0c0c0c]">
           <div className="bg-[#1a1a1a] rounded-[24px] p-1 flex border border-white/5 shadow-inner">
@@ -79,7 +78,6 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({
               <span className={`text-[11px] font-medium ${activeView === ViewState.HOME ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>Home</span>
             </button>
             <button 
-              /* Fix: Use ViewState.CONTACT for the contact tab navigation and active state checks to avoid impossible comparisons with ViewState.CHAT */
               onClick={() => setActiveView(ViewState.CONTACT)} 
               className={`flex-1 flex flex-col items-center justify-center py-3 rounded-[20px] transition-all duration-200 group cursor-pointer ${activeView === ViewState.CONTACT ? 'bg-white/5' : ''}`}
             >
