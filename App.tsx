@@ -1,17 +1,27 @@
+
 import React, { useState } from 'react';
 import { ChatWidget } from './components/ChatWidget';
-import { DEFAULT_WEBHOOK_URL } from './constants';
+import { DEFAULT_WEBHOOK_URL, INITIAL_GREETING } from './constants';
+import { Message } from './types';
 
 const App: React.FC = () => {
   const [isWidgetOpen, setIsWidgetOpen] = useState(true);
   const [webhookUrl, setWebhookUrl] = useState<string>(DEFAULT_WEBHOOK_URL);
+  
+  // Stato persistente dei messaggi al livello più alto dell'app
+  const [messages, setMessages] = useState<Message[]>([
+    { id: 'init-1', text: INITIAL_GREETING, sender: 'agent', timestamp: Date.now() }
+  ]);
+  
+  // ID Sessione persistente
+  const [sessionId] = useState(() => Math.random().toString(36).substring(7));
 
   return (
-    <div className="w-full h-screen relative bg-slate-900 flex items-center justify-center overflow-hidden">
+    <div className="w-full h-screen relative bg-[#0f172a] flex items-center justify-center overflow-hidden">
       <div className="text-center p-8 max-w-2xl">
         <h1 className="text-4xl font-bold text-white mb-4">LiveChat Widget Clone</h1>
         <p className="text-gray-400 mb-8">
-          Un clone fedele in React + Tailwind. Include integrazione webhook e design responsive.
+          Integrazione webhook n8n con persistenza della conversazione e design premium.
         </p>
         <button 
           onClick={() => setIsWidgetOpen(true)}
@@ -39,6 +49,9 @@ const App: React.FC = () => {
         onClose={() => setIsWidgetOpen(false)} 
         webhookUrl={webhookUrl}
         setWebhookUrl={setWebhookUrl}
+        messages={messages}
+        setMessages={setMessages}
+        sessionId={sessionId}
       />
     </div>
   );
