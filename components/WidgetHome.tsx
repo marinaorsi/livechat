@@ -30,7 +30,12 @@ export const WidgetHome: React.FC<WidgetHomeProps> = ({ onChangeView }) => {
       </div>
 
       <div className="bg-[#2a2a2a] rounded-2xl shadow-lg border border-white/5 p-1">
-        <a href="#" className="w-full flex items-center justify-between p-4 rounded-xl group">
+        <a 
+          href="https://markour.co/#section-mmQWgCRnn3" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-between p-4 rounded-xl group"
+        >
           <span className="text-white text-[14px]">Pacchetti e prezzi</span>
           <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#EFCF45] transition-colors">
              <Icons.ArrowRight className="w-3 h-3 text-gray-300 group-hover:text-black" />
